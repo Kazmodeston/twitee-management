@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable,  HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUsersDto } from './dtos/create-users.dto';
 import { User } from './entities/User.entity';
 import { hashPassword } from 'src/utils/bcrypt';
 import { Activate } from './entities/activate.entity';
-import { generateActivationCode } from '../utils/bcrypt';
+import { generateActivationCode, md5 } from '../utils/bcrypt';
 import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
@@ -24,7 +24,7 @@ export class UsersService {
         const formatedData = {...req, name};
         const code = generateActivationCode();
         const url = "http://localhost:3200";
-        const hashedEmail = hashPassword(getEmail);
+        const hashedEmail = md5(getEmail);
         
         // TODO: Check if User already exist
         
@@ -47,6 +47,7 @@ export class UsersService {
         const userObject = await this.usersRepository.save(user);
         
         if (userObject) {
+            const fullUrl = `${url}/users/activate/${hashedEmail}/${userObject.activation.key}`;
             // Send Activation email link
             await this.mailModule.sendMail({
                 from: '"Twitee 👻" <no-reply@twitee.com>', // sender address
@@ -61,7 +62,7 @@ export class UsersService {
                 <p></p>
                 <h4>Click the link below to activate your email</h4>
                 <p></p>
-                <a target='_blank' href='${url}/users/activate/${hashedEmail}/${userObject.activation.key}'>${url}/activate/${hashedEmail}/${userObject.activation.key}</a>
+                <a target='_blank' href=${fullUrl}>${fullUrl}</a>
                 
                 </center>
                 `,
@@ -70,10 +71,22 @@ export class UsersService {
             return userObject;
         }
     }
-}
-/* Welcome to Epoh Music
-Cheers,
-The Epoh Music Team
-Enter this code or click on activate ur account below:
+    
+    async activate(email: string, key: string) {
+        
+        // Check if the action code exist, then get the id
+        const activation = await this.activationRepository.findOneBy({ key });
+        
+        // Relate it with User entity to get the object
+        const user = await this.usersRepository.findBy({ activation });
 
-236449 */
+        if (!user) {
+            throw new HttpException('User not found', HttpStatus.FORBIDDEN);
+        }
+        
+        user.is_active = true;
+        console.log(user)
+        
+        // Update the is_active column
+    }
+}

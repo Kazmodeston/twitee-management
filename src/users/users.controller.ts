@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUsersDto } from './dtos/create-users.dto';
+import {Md5} from 'ts-md5'
 
 @Controller('users')
 export class UsersController {
@@ -13,8 +14,7 @@ export class UsersController {
     }
     
     @Get('activate/:email/:key')
-    activate(@Param() email: string, @Param() key: string) {
-        console.log(email);
-        console.log(key);
+    activate(@Param('email') email: string, @Param('key') key: string) {
+        return this.userService.activate(email, key);
     }
 }

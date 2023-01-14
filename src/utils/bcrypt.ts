@@ -1,4 +1,5 @@
 import * as bcrypt from 'bcrypt';
+import {Md5} from 'ts-md5'
 
 export function hashPassword(rawPassword: string): string {
     const SALT = 10;
@@ -11,4 +12,8 @@ export function generateActivationCode(): string {
     const codeTwo = new Date().getTime().toString(36).substring(2, 36);
     
     return codeOne + codeTwo;
+}
+
+export function md5(value: string): string {
+   return Md5.hashStr(value);
 }
