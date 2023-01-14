@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
   imports: [
@@ -13,6 +14,18 @@ import { UsersModule } from './users/users.module';
       database: 'twitee_db',
       entities: ['dist/**/*.entity.js'],
       synchronize: true,
+    }),
+    
+    MailerModule.forRoot({
+      transport: {
+        host: 'smtp.mailtrap.io',
+        port: 2525,
+        // secure: false, // true for 465, false for other ports
+        auth: {
+          user: '7eccc3319238ff',
+          pass: '4350006e63fdf7'
+        },
+      }
     }),
     UsersModule,
   ],
