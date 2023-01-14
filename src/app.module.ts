@@ -11,7 +11,7 @@ import { UsersModule } from './users/users.module';
       username: 'root',
       password: '',
       database: 'twitee_db',
-      entities: [],
+      entities: ['dist/**/*.entity.js'],
       synchronize: true,
     }),
     UsersModule,
