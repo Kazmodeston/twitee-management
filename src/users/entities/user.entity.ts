@@ -25,7 +25,10 @@ export class User {
     @UpdateDateColumn()
     updated_at: string;
     
-    @OneToOne(() => Activate)
+    @OneToOne(() => Activate, activate => activate.user)
+    activation: Activate
+    
+    /* @OneToOne(() => Activate)
     @JoinColumn()
-    activation: Activate;
+    activation: Activate; */
 } 

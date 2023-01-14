@@ -7,6 +7,7 @@ import { hashPassword } from 'src/utils/bcrypt';
 import { Activate } from './entities/activate.entity';
 import { generateActivationCode, md5 } from '../utils/bcrypt';
 import { MailerService } from '@nestjs-modules/mailer';
+import { Md5 } from 'ts-md5';
 
 @Injectable()
 export class UsersService {
@@ -27,27 +28,28 @@ export class UsersService {
         const hashedEmail = md5(getEmail);
         
         // TODO: Check if User already exist
-        
+        let checkUser = await this.usersRepository.findOneBy({email: getEmail});
+
+        if (checkUser) {
+            throw new HttpException('Email already exist', HttpStatus.UNPROCESSABLE_ENTITY);
+        }
         // Hash Password
         const password = hashPassword(req.password);
         
         const user = this.usersRepository.create({...formatedData, password});
       
-        // const userObject = await this.usersRepository.save(user);
+        const userObject = await this.usersRepository.save(user);
         
         // create activation code Snapshot
         const actionSnapshot = this.activationRepository.create({key: code});
         
+        actionSnapshot.userId = user.id;
         // Save Activation code
-        const activation = await this.activationRepository.save(actionSnapshot);
-        
-        // update User snapshot
-        user.activation = activation;
-        
-        const userObject = await this.usersRepository.save(user);
+       const getActivation = await this.activationRepository.save(actionSnapshot);
         
         if (userObject) {
-            const fullUrl = `${url}/users/activate/${hashedEmail}/${userObject.activation.key}`;
+            const fullUrl = `${url}/users/activate/${hashedEmail}/${getActivation.key}`;
+            
             // Send Activation email link
             await this.mailModule.sendMail({
                 from: '"Twitee 👻" <no-reply@twitee.com>', // sender address
@@ -74,19 +76,41 @@ export class UsersService {
     
     async activate(email: string, key: string) {
         
-        // Check if the action code exist, then get the id
-        const activation = await this.activationRepository.findOneBy({ key });
+        let success = false;
         
-        // Relate it with User entity to get the object
-        const user = await this.usersRepository.findBy({ activation });
-
-        if (!user) {
-            throw new HttpException('User not found', HttpStatus.FORBIDDEN);
+        // Check if the action code exist, then get the id
+        const activation = await this.activationRepository.findOne({ where:{ key }, relations: { user: true } });
+        
+        if (!activation || !activation.user) {
+            throw new HttpException('Activation not found', HttpStatus.NOT_FOUND);
         }
         
-        user.is_active = true;
-        console.log(user)
+        // Relate it with User entity to get the object
+        const user = activation.user;
         
-        // Update the is_active column
+        const getUserObject = await this.usersRepository.findOneBy({ id: activation.userId });
+
+        // Check if Email coming from url is the same with DB
+        if (!(Md5.hashStr(getUserObject.email) === email)) {
+            throw new HttpException('Cannot activat account', HttpStatus.BAD_REQUEST);
+        }
+        
+        const newUser = {...user, is_active: true}
+
+        if (!user) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        }
+        
+        // Update the is_active column and Delete Activation code
+        const updatedData = await this.usersRepository.save(newUser) && this.activationRepository.remove(activation);
+        
+        if (updatedData) success = true;
+        
+        if (!success) {
+            throw new HttpException('Error updating status', HttpStatus.BAD_REQUEST);
+        }
+        
+        return success;
+        
     }
 }
