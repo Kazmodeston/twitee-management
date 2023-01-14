@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUsersDto } from './dtos/create-users.dto';
 
@@ -10,5 +10,11 @@ export class UsersController {
     @Post()
     store(@Body() createUserDto: CreateUsersDto) {
         return this.userService.store(createUserDto);
+    }
+    
+    @Get('activate/:email/:key')
+    activate(@Param() email: string, @Param() key: string) {
+        console.log(email);
+        console.log(key);
     }
 }

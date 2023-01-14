@@ -61,7 +61,7 @@ export class UsersService {
                 <p></p>
                 <h4>Click the link below to activate your email</h4>
                 <p></p>
-                <a target='_blank' href='${url}/activate/${hashedEmail}/${userObject.activation.key}'>${url}/activate/${hashedEmail}/${userObject.activation.key}</a>
+                <a target='_blank' href='${url}/users/activate/${hashedEmail}/${userObject.activation.key}'>${url}/activate/${hashedEmail}/${userObject.activation.key}</a>
                 
                 </center>
                 `,
