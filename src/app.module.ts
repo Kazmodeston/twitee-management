@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { AuthsModule } from './auths/auths.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
       }
     }),
     UsersModule,
+    AuthsModule,
   ],
   controllers: [],
   providers: [],
