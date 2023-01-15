@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { AuthsModule } from './auths/auths.module';
+import { PostsModule } from './posts/posts.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { AuthsModule } from './auths/auths.module';
     }),
     UsersModule,
     AuthsModule,
+    PostsModule,
   ],
   controllers: [],
   providers: [],

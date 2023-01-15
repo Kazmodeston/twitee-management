@@ -1,5 +1,6 @@
-import { CreateDateColumn, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
+import { CreateDateColumn, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn, OneToMany } from "typeorm"
 import { Activate } from "./activate.entity";
+import { Post } from './post.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -27,6 +28,9 @@ export class User {
     
     @OneToOne(() => Activate, activate => activate.user)
     activation: Activate
+    
+    @OneToMany(() => Post, post => post.user)
+    posts: Post[];
     
     /* @OneToOne(() => Activate)
     @JoinColumn()
