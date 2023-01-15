@@ -117,4 +117,11 @@ export class UsersService {
     async findByEmail(email: string): Promise<User | null> {
         return await this.usersRepository.findOneBy({ email });
     }
+    
+    async getUser(id: number): Promise<any> {
+            return await this.usersRepository.findOne({ where: { id }, relations: {
+                posts: true,
+            } 
+        })
+    }
 }

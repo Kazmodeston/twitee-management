@@ -27,8 +27,6 @@ export class PostsService {
     }
     
     async singlePost(id: number, user: any): Promise<any> {
-        // const post = await this.postsRepository.findOneBy({ id, userId: user.id });
-        // const post = await this.postsRepository.findOneBy({ id, userId: user.id });
         const post = await this.postsRepository.find({ where:{ id, userId: user.id }, relations: {
                 comments: true,
                 user: true
