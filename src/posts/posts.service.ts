@@ -17,13 +17,23 @@ export class PostsService {
     }
     
     async lists(user: any): Promise<Post[]> {
-       const posts = await this.postsRepository.findBy({ userId: user.id });
+       const posts = await this.postsRepository.find({ where:{userId: user.id}, relations: {
+            comments: true,
+            user: true
+        }
+    });
        
        return posts;
     }
     
-    async singlePost(id: number, user: any): Promise<Post> {
-        const post = await this.postsRepository.findOneBy({ id, userId: user.id });
+    async singlePost(id: number, user: any): Promise<any> {
+        // const post = await this.postsRepository.findOneBy({ id, userId: user.id });
+        // const post = await this.postsRepository.findOneBy({ id, userId: user.id });
+        const post = await this.postsRepository.find({ where:{ id, userId: user.id }, relations: {
+                comments: true,
+                user: true
+            } 
+        });
         
         if (!post) {
             throw new HttpException('No Post Found!', HttpStatus.NOT_FOUND);
@@ -32,7 +42,7 @@ export class PostsService {
         return post;
     }
     
-    async deletePost(id: number, user: any): Promise<Post> {
+    async deletePost(id: number, user: any): Promise<any> {
         const post = await this.singlePost(id, user);
         
         return this.postsRepository.remove(post);

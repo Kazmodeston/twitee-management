@@ -1,5 +1,6 @@
-import { Entity, Column, JoinColumn, OneToOne, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, JoinColumn, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import { User } from './User.entity';
+import { Comment } from './comments.entity';
 
 @Entity({ name: 'posts' })
 export class Post {
@@ -13,7 +14,16 @@ export class Post {
     @Column()
     title: string;
     
+    @CreateDateColumn()
+    created_at: string;
+    
+    @UpdateDateColumn()
+    updated_at: string;
+    
     @ManyToOne(() => User, user => user.posts, { onDelete: 'CASCADE' })
     @JoinColumn()
     user: User;
+    
+    @OneToMany(() => Comment, comment => comment.post)
+    comments: Comment[];
 }
