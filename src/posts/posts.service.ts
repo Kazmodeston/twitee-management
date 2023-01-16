@@ -19,7 +19,8 @@ export class PostsService {
     async lists(user: any): Promise<Post[]> {
        const posts = await this.postsRepository.find({ where:{userId: user.id}, relations: {
             comments: true,
-            user: true
+            user: true,
+            likes: true
         }
     });
        
@@ -29,7 +30,8 @@ export class PostsService {
     async singlePost(id: number, user: any): Promise<any> {
         const post = await this.postsRepository.find({ where:{ id, userId: user.id }, relations: {
                 comments: true,
-                user: true
+                user: true,
+                likes: true
             } 
         });
         
@@ -44,5 +46,6 @@ export class PostsService {
         const post = await this.singlePost(id, user);
         
         return this.postsRepository.remove(post);
-    } 
+    }
+     
 }

@@ -2,6 +2,7 @@ import { CreateDateColumn, Column, Entity, JoinColumn, OneToOne, PrimaryGenerate
 import { Activate } from "./activate.entity";
 import { Post } from './post.entity';
 import { Comment } from './comments.entity';
+import { LikePost } from './like-post.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -35,6 +36,9 @@ export class User {
     
     @OneToMany(() => Comment, comment => comment.user)
     comments: Comment[];
+    
+    @OneToMany(() => LikePost, like => like.user)
+    likes: LikePost[];
     
     /* @OneToOne(() => Activate)
     @JoinColumn()
