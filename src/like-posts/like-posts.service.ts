@@ -20,9 +20,26 @@ export class LikePostsService {
             throw new HttpException('No Post Found!', HttpStatus.NOT_FOUND);
         }
         
+        const checkLike = await this.findLike(postId, user);
+        
+        if (checkLike) {
+            throw new HttpException('You have already liked this Post', HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+        
         const formatedData = { ...validatedData, postId, userId: user.id };
         
-        // const likeSnapshot = this.likePostsRepository.
+        const likeSnapshot = this.likePostsRepository.create(formatedData);
         
+        const saveLike = this.likePostsRepository.save(likeSnapshot);
+        
+        return saveLike;
+        
+    }
+    
+    async findLike(postId: number, user: any): Promise<LikePost> {
+        return await this.likePostsRepository.findOne({ where: {
+                postId, userId: user.id
+            } 
+        })
     }
 }

@@ -1,12 +1,7 @@
 import { Entity, Column, JoinColumn, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { User } from './User.entity';
 import { Post } from './post.entity';
-
-export enum Status {
-    LIKE = "Like",
-    UNLIKE = "Unlike",
-    NONE = "NULL",
-}
+import { Status } from 'src/utils/constants';
 
 @Entity({ name: 'like_posts' })
 export class LikePost {
