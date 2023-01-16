@@ -3,3 +3,7 @@ export enum Status {
     UNLIKE = "Unlike",
     NONE = "NULL",
 }
+
+export const jwtConstants = {
+    secret: 'secretKey',
+  };

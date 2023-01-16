@@ -2,11 +2,15 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt/dist';
 
 @Injectable()
 export class AuthsService {
     
-    constructor(private readonly usersService: UsersService) {}
+    constructor(
+        private readonly usersService: UsersService,
+        private jwtService: JwtService
+        ) {}
     
     async validateUser(email: string, password: string): Promise<any> {
         const user = await this.usersService.findByEmail(email);
@@ -27,5 +31,14 @@ export class AuthsService {
         }
         
         return user;
+    }
+    
+    async generateToken(user: any) {
+        
+        const payload = { email: user.email, name: user.name, sub: user.id };
+        
+        return {
+            access_token: this.jwtService.sign(payload)
+        }
     }
 }
