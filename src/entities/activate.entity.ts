@@ -15,5 +15,5 @@ export class Activate {
     
     @OneToOne(() => User, user => user.activation, { onDelete: 'CASCADE' })
     @JoinColumn()
-    user: Activate;
+    user: User;
 }

@@ -17,4 +17,9 @@ export class UsersController {
     activate(@Param('email') email: string, @Param('key') key: string) {
         return this.userService.activate(email, key);
     }
+    
+    @Get(':id')
+    getSingleUser(@Param('id') id: number) {
+        return this.userService.getUser(id);
+    }
 }

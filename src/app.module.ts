@@ -2,6 +2,10 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { AuthsModule } from './auths/auths.module';
+import { PostsModule } from './posts/posts.module';
+import { CommentsModule } from './comments/comments.module';
+import { LikePostsModule } from './like-posts/like-posts.module';
 
 @Module({
   imports: [
@@ -28,6 +32,10 @@ import { MailerModule } from '@nestjs-modules/mailer';
       }
     }),
     UsersModule,
+    AuthsModule,
+    PostsModule,
+    CommentsModule,
+    LikePostsModule,
   ],
   controllers: [],
   providers: [],
