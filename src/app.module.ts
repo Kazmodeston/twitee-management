@@ -19,7 +19,7 @@ import { LikePostsModule } from './like-posts/like-posts.module';
       entities: ['dist/**/*.entity.js'],
       synchronize: true,
     }),
-    
+
     MailerModule.forRoot({
       transport: {
         host: 'smtp.mailtrap.io',
@@ -27,9 +27,9 @@ import { LikePostsModule } from './like-posts/like-posts.module';
         // secure: false, // true for 465, false for other ports
         auth: {
           user: '7eccc3319238ff',
-          pass: '4350006e63fdf7'
+          pass: '4350006e63fdf7',
         },
-      }
+      },
     }),
     UsersModule,
     AuthsModule,
